@@ -7,6 +7,7 @@ import argparse
 import base64
 import unicodedata
 from getpass import getpass
+import os
 from pathlib import Path
 import re
 from typing import Union, Tuple
@@ -179,7 +180,7 @@ def main():
 
     args = parse_args()
 
-    input_path = Path(args.file)
+    input_path = Path(os.path.abspath(args.file))
 
     if args.command == 'encrypt':
         output_path = input_path.parent / ('encrypted_' + input_path.name)
