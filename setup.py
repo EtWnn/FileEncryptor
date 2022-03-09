@@ -15,10 +15,10 @@ requirements = requirements_content.split('\n')
 setup(
     name='file_encryptor',
     version=__version__,
-    packages=['src'],
+    packages=['file_encryptor'],
     install_requires=requirements,
     entry_points={
-        'console_scripts': ['file_encryptor=src.encryptor:main']
+        'console_scripts': ['file_encryptor=file_encryptor.encryptor:main']
     },
     url='https://github.com/EtWnn/FileEncryptor',
     author='EtWnn',
