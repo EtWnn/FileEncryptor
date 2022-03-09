@@ -3,6 +3,7 @@ author: EtWnn, https://github.com/EtWnn
 
 Main module of the repo: contains all the encryption / decryption logic
 """
+import argparse
 import base64
 import unicodedata
 from getpass import getpass
@@ -10,7 +11,7 @@ from pathlib import Path
 import re
 from typing import Union, Tuple
 
-from cryptography.fernet import Fernet
+from cryptography.fernet import Fernet, InvalidToken
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
@@ -146,8 +147,49 @@ def run_decryption(encrypted_file_path: Path, clear_file_path: Path):
     password, salt = ask_credentials()
     key = get_derived_key(password, salt)
 
-    clear_content = read_decrypt(encrypted_file_path, key).decode("utf-8")
+    try:
+        clear_content = read_decrypt(encrypted_file_path, key).decode("utf-8")
+    except InvalidToken:
+        print("Decryption failed: Invalid token")
+        return
 
     with open(clear_file_path, 'w') as file:
         file.write(clear_content)
     print(f"Decrypted file successfully written to {encrypted_file_path}")
+
+
+def parse_args() -> argparse.Namespace:
+    """
+    Parse the arguments from a command line
+
+    :return: name space with the parsed arguments
+    :rtype: Namespace
+    """
+    parser = argparse.ArgumentParser(description="Script to decrypt or encrypt a file")
+
+    parser.add_argument('command', metavar='cmd', type=str,
+                        help="Action to be perform: 'encrypt' or 'decrypt'")
+    parser.add_argument('file', type=str,
+                        help="Path to the file to perform an action on")
+
+    return parser.parse_args()
+
+
+def main():
+
+    args = parse_args()
+
+    input_path = Path(args.file)
+
+    if args.command == 'encrypt':
+        output_path = input_path.parent / ('encrypted_' + input_path.name)
+        run_encryption(input_path, output_path)
+    elif args.command == 'decrypt':
+        output_path = input_path.parent / ('decrypted_' + input_path.name)
+        run_decryption(input_path, output_path)
+    else:
+        raise ValueError(f"Command must be one of {'encrypt', 'decrypt'}, got {args.cmd}")
+
+
+if __name__ == '__main__':
+    main()
