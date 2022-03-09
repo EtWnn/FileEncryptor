@@ -6,6 +6,7 @@ Main module of the repo: contains all the encryption / decryption logic
 import base64
 import unicodedata
 from getpass import getpass
+from pathlib import Path
 import re
 from typing import Union, Tuple
 
@@ -46,14 +47,14 @@ def get_derived_key(password: Union[str, bytes], salt: Union[int, bytes]) -> Fer
     return Fernet(key)
 
 
-def encrypt_write(content: Union[str, bytes], file_path: str, key: Fernet):
+def encrypt_write(content: Union[str, bytes], file_path: Path, key: Fernet):
     """
     Encrypt a content and write it to a file
 
     :param content: content to write in the file
     :type content: Union[str, bytes]
     :param file_path: path of the file
-    :type file_path: str
+    :type file_path: Path
     :param key: key for encryption
     :type key: Fernel
     """
@@ -65,12 +66,12 @@ def encrypt_write(content: Union[str, bytes], file_path: str, key: Fernet):
         file.write(encrypted_content)
 
 
-def read_decrypt(file_path: str, key: Fernet) -> bytes:
+def read_decrypt(file_path: Path, key: Fernet) -> bytes:
     """
     Decrypt the content of a file
 
     :param file_path: path of the file
-    :type file_path: str
+    :type file_path: Path
     :param key: key for decryption
     :type key: Fernel
     :return: decrypted content
@@ -114,14 +115,14 @@ def ask_credentials() -> Tuple[str, int]:
     return password, salt
 
 
-def run_encryption(clear_file_path: str, encrypted_file_path: str):
+def run_encryption(clear_file_path: Path, encrypted_file_path: Path):
     """
     Encryption process for a file
 
     :param clear_file_path: path to the file to be encrypted
-    :type clear_file_path: str
+    :type clear_file_path: Path
     :param encrypted_file_path: location where the encrypted file will be saved
-    :type encrypted_file_path: str
+    :type encrypted_file_path: Path
     """
     password, salt = ask_credentials()
     key = get_derived_key(password, salt)
@@ -133,14 +134,14 @@ def run_encryption(clear_file_path: str, encrypted_file_path: str):
     print(f"Encrypted file successfully written to {encrypted_file_path}")
 
 
-def run_decryption(encrypted_file_path: str, clear_file_path: str):
+def run_decryption(encrypted_file_path: Path, clear_file_path: Path):
     """
     Decryption process for an encrypted file
 
     :param encrypted_file_path: path to the file to be decrypted
-    :type encrypted_file_path: str
+    :type encrypted_file_path: Path
     :param clear_file_path: location where the decrypted file will be saved
-    :type clear_file_path: str
+    :type clear_file_path: Path
     """
     password, salt = ask_credentials()
     key = get_derived_key(password, salt)
