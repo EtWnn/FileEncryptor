@@ -1,7 +1,7 @@
 import os
 from setuptools import setup
 
-from src import __version__
+from file_encryptor import __version__
 
 this_directory = os.path.abspath(os.path.dirname(__file__))
 
