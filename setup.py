@@ -13,7 +13,7 @@ with open("requirements.txt") as file:
 requirements = requirements_content.split('\n')
 
 setup(
-    name='FileEncryptor',
+    name='file_encryptor',
     version=__version__,
     packages=['src'],
     install_requires=requirements,
